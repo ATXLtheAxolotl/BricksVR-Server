@@ -1,5 +1,5 @@
 import * as chalk from "chalk"
-import { DATABASE } from "./database/dataManager"
+import { DATABASE } from "./database/DataManager"
 import { app } from "./other/app"
 import { ROOM_KEY } from "./other/Constants"
 import logLogo from "./other/logo"

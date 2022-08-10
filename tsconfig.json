@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "noImplicitAny": false,
+      "strictNullChecks": false,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "sourceMap": true
+    }
+  }

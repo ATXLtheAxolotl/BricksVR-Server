@@ -36,15 +36,26 @@ class DataManager {
         })
     }
 
-    public async createRoom(room: string, userID: string) {
+    public async createRoom(room: string, userID: string): Promise<string | null | any> {
         return new Promise(async (res) => {
-            if(await this.roomExist(room)) {
-                return res(null);
-            }
-            else {
-                this.db.run(`INSERT INTO rooms VALUES("${room}", "${userID}", "false", "${room}")`, (err) => res(null))
-            }
+            const code = await this.generateRoomCode()
+            this.db.run(`INSERT INTO rooms VALUES("${code}", "${userID}", "false", "${room}")`, (data, err) => {
+                if(err) {
+                    console.error(err)
+                    return res(null)
+                }
+                else res({
+                    name: room,
+                    code: code,
+                })
+            });
         })
+    }
+
+    private async generateRoomCode() {
+        const code = ("" + Math.random()).substring(2, 10);
+        if(await this.roomExist(code)) return this.generateRoomCode();
+        else return code;
     }
 
     public async getBricks(room: string): Promise<any[]> {

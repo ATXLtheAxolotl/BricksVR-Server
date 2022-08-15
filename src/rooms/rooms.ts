@@ -4,8 +4,8 @@ import { DATABASE } from "../database/DataManager";
 export const router = Router()
 
 router.get('/rooms/:room_id', async (req, res) => {
-    const data = await DATABASE.getRoom(req.params.room_id)
-    const bricks = await DATABASE.getBricks(req.params.room_id)
+    const data = await DATABASE.getRoom(req.params.room_id.split('-')[1])
+    const bricks = await DATABASE.getBricks(req.params.room_id.split('-')[1])
 
     if(data) {
         res.send({
@@ -21,8 +21,8 @@ router.get('/rooms/:room_id', async (req, res) => {
 })
 
 router.get('/rooms/bricks/:room_id', async (req, res) => {
-    const data = await DATABASE.getRoom(req.params.room_id)
-    const bricks = await DATABASE.getBricks(req.params.room_id)
+    const data = await DATABASE.getRoom(req.params.room_id.split('-')[1])
+    const bricks = await DATABASE.getBricks(req.params.room_id.split('-')[1])
 
     let brickResponse = bricks.map((brick) => ({
         uuid: brick.uuid,
@@ -56,6 +56,23 @@ router.get('/rooms/bricks/:room_id', async (req, res) => {
 })
 
 router.post('/rooms/create', async (req, res) => {
-    if(!req.body.name) return res.status(400).send('Must define room `name`.')
-    if(!req.body.userid) return res.status(400).send('Must define `userid`.')
+    if(!req.body.name) return res.send(null)
+    if(!req.body.userid) return res.send(null)
+
+    const { name, userid } = req.body;
+
+    const room = await DATABASE.createRoom(name, userid);
+    
+    switch(room) {
+        case null:
+            res.send(null)
+            break;
+        default:
+            res.send({
+                name: room.name,
+                code: room.code,
+                normcoreRoom: '0.2-' + room.code,
+            })
+            break;
+    }
 })

@@ -5,6 +5,8 @@ import logLogo from "./other/logo";
 import * as express from "express";
 
 const app = express();
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 app.use(require('./rooms/rooms').router)
 
 app.get('/', (req, res) => {

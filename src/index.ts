@@ -1,8 +1,11 @@
-import * as chalk from "chalk"
-import { DATABASE } from "./database/DataManager"
-import { app } from "./other/app"
-import { ROOM_KEY } from "./other/Constants"
-import logLogo from "./other/logo"
+import * as chalk from "chalk";
+import { DATABASE } from "./database/DataManager";
+import { ROOM_KEY } from "./other/Constants";
+import logLogo from "./other/logo";
+import * as express from "express";
+
+const app = express();
+app.use(require('./rooms/rooms').router)
 
 app.get('/', (req, res) => {
     res.send({
@@ -12,8 +15,10 @@ app.get('/', (req, res) => {
                 path: '/rooms',
                 length: DATABASE,
                 info: {
-                    path: '/info/',
-                    headers: ['room_id']
+                    path: '/info/{room}',
+                },
+                bricks: {
+                    path: '/bricks/{room}'
                 }
             },
             friends: {

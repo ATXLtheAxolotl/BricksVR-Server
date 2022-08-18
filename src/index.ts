@@ -8,6 +8,8 @@ const app = express();
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 app.use(require('./rooms/rooms').router)
+app.use(require('./bricks/bricks').router)
+app.use(require('./misc/version').router)
 
 app.get('/', (req, res) => {
     res.send({
@@ -19,8 +21,8 @@ app.get('/', (req, res) => {
                 info: {
                     path: '/info/{room}',
                 },
-                bricks: {
-                    path: '/bricks/{room}'
+                bricksAdd: {
+                    path: '/bricks'
                 }
             },
             friends: {

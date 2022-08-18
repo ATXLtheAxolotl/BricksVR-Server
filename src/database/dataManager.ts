@@ -23,6 +23,7 @@ class DataManager {
         this.db.run(`CREATE TABLE IF NOT EXISTS bans(name TEXT, reason TEXT, date TEXT)`, err => err ? console.error(chalk.red(err)) : console.log(chalk.green('[SUCESS] Loaded ban data!')))
         this.db.run(`CREATE TABLE IF NOT EXISTS bricks(room TEXT, uuid TEXT, matID INTEGER, color INTEGER, type TEXT, posX REAL, posY REAL, posZ REAL, rotW REAL, rotX REAL, rotY REAL, rotZ REAL, usingNewColor INTEGER, headClientId INTEGER, usingHeadStuff INTEGER)`, err => err ? console.error(chalk.red(err)) : console.log(chalk.green('[SUCESS] Loaded brick data!')))
         this.db.run(`CREATE TABLE IF NOT EXISTS rooms(code TEXT, ownerId TEXT, locked TEXT, name TEXT)`, err => err ? console.error(chalk.red(err)) : console.log(chalk.green('[SUCESS] Loaded rooms data!')))
+        this.db.run(`CREATE TABLE IF NOT EXISTS friends(userID TEXT, name TEXT, code TEXT, online INTEGER, room TEXT)`, err => err ? console.error(chalk.red(err)) : console.log(chalk.green('[SUCESS] Loaded friend data!')))
         return this;
     }
 
@@ -70,7 +71,7 @@ class DataManager {
 
     public async brickAdd(room: string, brick: Brick): Promise<boolean> {
         return new Promise(async (res) => {
-          const check = await this.brickExist(room, brick)
+          const check = await this.brickExist(room, brick.uuid)
           if (check) {
             console.warn(chalk.rgb(255, 165, 0)(`[WARN] The brick with the uuid of "${brick.uuid}" already exists in the brick store.`))
   
@@ -83,9 +84,32 @@ class DataManager {
         })
     }
 
-    private async brickExist(room: string, brick: Brick): Promise<boolean> {
+    public async brickRemove(room: string, brick: string): Promise<boolean> {
         return new Promise(async (res) => {
-            this.db.get(`SELECT * FROM bricks WHERE uuid = "${brick.uuid}"`, (err, row) => {
+            const check = await this.brickExist(room, brick)
+            if (check) {
+                this.db.run(`DELETE FROM bricks WHERE ( uuid = "${brick}" AND room = "${room}" )`)
+                return res(true)
+            } else return res(false)
+        })
+    }
+
+    public async getFriends(codes: string[]) {
+        return new Promise(async (res) => {
+            res('no one')
+            this.db.all("SELECT * FROM friendCodes", (err, rows) => {
+                if (err) return res(null)
+                const friendData = [];
+                for(var i = 0; i < rows.length; i++) {
+                    if(codes.includes(rows[i].code)) friendData.push(rows[i]);
+                }
+              })
+        })
+    }
+
+    private async brickExist(room: string, brick: string): Promise<boolean> {
+        return new Promise(async (res) => {
+            this.db.get(`SELECT * FROM bricks WHERE uuid = "${brick}"`, (err, row) => {
                 if (err) return console.error(err)
                 if (row == undefined) return res(false)
                 

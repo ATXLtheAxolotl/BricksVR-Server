@@ -23,7 +23,7 @@ router.get('/rooms/:room_id', async (req, res) => {
 router.get('/rooms/bricks/:room_id', async (req, res) => {
     const data = await DATABASE.getRoom(req.params.room_id.split('-')[1])
     const bricks = await DATABASE.getBricks(req.params.room_id.split('-')[1])
-
+    
     let brickResponse = bricks.map((brick) => ({
         uuid: brick.uuid,
         matId: brick.matId,
@@ -32,7 +32,7 @@ router.get('/rooms/bricks/:room_id', async (req, res) => {
         pos: {
             x: brick.posX,
             y: brick.posY,
-            Z: brick.posZ,
+            z: brick.posZ,
         },
         rot: {
             w: brick.rotW,
@@ -40,6 +40,7 @@ router.get('/rooms/bricks/:room_id', async (req, res) => {
             y: brick.rotY,
             z: brick.rotZ,
         },
+        headClientId: brick.headClientId,
         usingNewColor: brick.usingNewColor,
         usingHeadStuff: brick.usingHeadStuff
     }))

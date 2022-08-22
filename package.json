@@ -1,0 +1,26 @@
+{
+  "name": "bricksvr-server",
+  "version": "1.0.0",
+  "description": "The API server component to BricksVR.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -x \"ts-node\" src/index.ts"
+  },
+  "keywords": [
+    "BricksVR"
+  ],
+  "author": "ATXLtheAxolotl#2134",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "sqlite3": "^5.0.11",
+    "ts-node": "^10.9.1",
+    "tsc": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/sqlite3": "^3.1.8"
+  }
+}

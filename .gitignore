@@ -131,3 +131,5 @@ dist
 
 # custom
 database.db
+.replit
+replit.nix
